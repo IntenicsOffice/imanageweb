@@ -1,0 +1,29 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #__next {
+    height: 100%;
+  }
+  
+  .container-fluid {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .row {
+    flex: 1;
+  }
+  
+  main {
+    height: 100%;
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+  }
+  
+  footer {
+    margin-top: auto;
+  }
+  
