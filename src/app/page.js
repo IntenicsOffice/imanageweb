@@ -20,7 +20,7 @@ const Home = () => {
         if (companyIdCookie) {
             router.push('/dashboard');
         }
-    }, []);
+    }, [router]);
 
     return (
         <>

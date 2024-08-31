@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Modal, Button, Card, Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { SubscriptionController } from "../../../_controllers/index.js";
 import { usePathname } from 'next/navigation';
@@ -10,10 +10,7 @@ import sha256 from 'crypto-js/sha256';
 import axios from "axios";
 
 
-
-
 const SubscriptionModal = ({ show, handleClose }) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
     const pathname = usePathname()
     const [packageType, setPackageType] = useState([]);
     const [devicePrice, setDevicePrice] = useState(0);
@@ -63,7 +60,6 @@ const SubscriptionModal = ({ show, handleClose }) => {
 
     const handleDecrementDevice = () => {
         setNumOfDevice(prevCount => (prevCount > 0 ? prevCount - 1 : 0)); // Ensure it doesn't go below 0
-        // calculateDeviceAmount();
     };
 
     const handleIncrementDevice = () => {
@@ -84,12 +80,17 @@ const SubscriptionModal = ({ show, handleClose }) => {
         setNumOfEmployee(prevCount => (prevCount > 0 ? prevCount - 1 : 0)); // Ensure it doesn't go below 0
     };
 
-    const calculateDeviceAmount = () => {
+    // const calculateDeviceAmount = () => {
+    //     const total_amount = (numOfDevice * devicePrice);
+    //     setTotalDeviceAmount(total_amount);
+    // }
+
+    const calculateDeviceAmount = useCallback(() => {
         const total_amount = (numOfDevice * devicePrice);
         setTotalDeviceAmount(total_amount);
-    }
+    }, [numOfDevice, devicePrice]); 
 
-    const calculateEmployeeAmount = () => {
+    const calculateEmployeeAmount = useCallback(() => {
         const selectedPackage = packageType.find(item => `package_type-${packageType.indexOf(item)}` === selectedPlan);
         if (selectedPackage) {
             setPackageTypeId(selectedPackage._id);
@@ -104,7 +105,7 @@ const SubscriptionModal = ({ show, handleClose }) => {
                 setTotalEmployeeAmount(total_amount);
             }
         }
-    };
+    },[selectedPlan, packageType, numOfEmployee, packageMonthlyPrice, packageYearlyPrice]);
 
     const postPayment = async () =>{
         const companyIdCookie = getCookie("company_id");
@@ -123,15 +124,15 @@ const SubscriptionModal = ({ show, handleClose }) => {
 
         const response = await SubscriptionController.subscriptionPayment(formData);
         if (response.status === 200) {
-            // console.log("response.data", response.data);
+            console.log("response.data", response.data);
             // await SubscriptionController.phonePe(response.data);
             const res = await axios.post('/api/initiatePayment', response.data);
             console.log("res**************", res);
-            if (res.data.success) {
-                window.location.href = res.data.paymentUrl;
-            } else {
-                alert('Payment initiation failed. Please try again.');
-            }
+            // if (res.data.success) {
+            //     window.location.href = res.data.paymentUrl;
+            // } else {
+            //     alert('Payment initiation failed. Please try again.');
+            // }
         }
     }
 
@@ -207,15 +208,14 @@ const SubscriptionModal = ({ show, handleClose }) => {
 
     useEffect(() => {
         calculateDeviceAmount();
-    }, [numOfDevice]);
+    }, [calculateDeviceAmount]);
 
     useEffect(() => {
         calculateEmployeeAmount();
-    }, [selectedPlan, packageType, numOfEmployee]);
+    }, [calculateEmployeeAmount]);
 
     useEffect(() => {
         getPackageType();
-
     }, [pathname]);
 
 
@@ -236,7 +236,7 @@ const SubscriptionModal = ({ show, handleClose }) => {
                             <Card.Body>
                                 {
                                     packageType.map((item, index) => (
-                                        <Row>
+                                        <Row key={index}>
                                             <Col md={5}>
                                                 <Form>
                                                     <div key={`package_type-${index}`} className="mb-2">
