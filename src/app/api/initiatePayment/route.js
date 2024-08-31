@@ -23,7 +23,7 @@ export async function POST(request) {
                 type: "PAY_PAGE",
             },
         };
-
+        console.log(payload)
         const dataPayload = JSON.stringify(payload);
         const encodedPayload = Buffer.from(dataPayload).toString('base64');
         console.log("encodedPayload", encodedPayload)
