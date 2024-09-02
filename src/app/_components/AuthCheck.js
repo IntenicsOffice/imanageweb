@@ -2,6 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getCookie } from '../utils/ClientHelpers';
+// import Cookies from 'js-cookie';
+
 
 const AuthCheck = ({ children }) => {
     const router = useRouter();
@@ -10,7 +12,8 @@ const AuthCheck = ({ children }) => {
     useEffect(() => {
         const checkAuth = async () => {
             const companyIdCookie = getCookie("company_id");
-            console.log("companyIdCookie", companyIdCookie);
+            // const companyIdCookie = Cookies.get('company_id');
+
             const isLoggedIn = Boolean(companyIdCookie);
             setAuthenticated(isLoggedIn);
 

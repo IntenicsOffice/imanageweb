@@ -2,7 +2,6 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
-
 export async function POST(request) {
     console.log("request");
     const { company_id, merchant_transaction_id, payment } = await request.json();
@@ -15,9 +14,9 @@ export async function POST(request) {
             merchantTransactionId: merchant_transaction_id,
             merchantUserId: company_id,
             amount: payment * 100, // converting to paise
-            redirectUrl: 'http://localhost:3000/success',
+            redirectUrl: 'http://139.59.69.40:3537/success',
             redirectMode: 'POST',
-            callbackUrl: 'http://localhost:3000/success',
+            callbackUrl: 'http://139.59.69.40:3537/success',
             mobileNumber: '7880024466',
             paymentInstrument: {
                 type: "PAY_PAGE",

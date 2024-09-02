@@ -22,7 +22,6 @@ const Header = () => {
             'role'
         ];
         cookies.forEach(cookie => {
-            console.log("delete cookie");
             deleteCookie(cookie);
         });
     };

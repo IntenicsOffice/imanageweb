@@ -128,11 +128,11 @@ const SubscriptionModal = ({ show, handleClose }) => {
             // await SubscriptionController.phonePe(response.data);
             const res = await axios.post('/api/initiatePayment', response.data);
             console.log("res**************", res);
-            // if (res.data.success) {
-            //     window.location.href = res.data.paymentUrl;
-            // } else {
-            //     alert('Payment initiation failed. Please try again.');
-            // }
+            if (res.data.success) {
+                window.location.href = res.data.paymentUrl;
+            } else {
+                alert('Payment initiation failed. Please try again.');
+            }
         }
     }
 

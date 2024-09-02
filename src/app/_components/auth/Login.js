@@ -3,8 +3,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import { companyLogin } from "../../../../_controllers/AuthController";
-// import { serialize } from 'cookie';
-// import { cookies } from 'next/headers';
+import { setCookie } from "@/app/utils/ClientHelpers";
 
 
 const Login = () => {
@@ -51,7 +50,14 @@ const Login = () => {
         try {
           const response = await companyLogin(formData);
           if (response.status === 200) {
-                console.log('Login successful:', response);
+
+                setCookie('_id', response._id , 1); // Set cookie for 1 day
+                setCookie('company_id', response.company_id , 2); // Set cookie for 1 day
+                setCookie('access_token', response.access_token , 1); // Set cookie for 1 day
+                setCookie('company_name', response.company_name , 1); // Set cookie for 1 day
+                setCookie('owner_name', response.owner_name , 1); // Set cookie for 1 day
+                setCookie('role', response.role , 1); // Set cookie for 1 day
+
                 router.push('/dashboard');
           }else{
             throw new Error(response.message || 'Login failed');
