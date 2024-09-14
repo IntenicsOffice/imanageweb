@@ -2,15 +2,21 @@ import { useEffect, useState, useCallback } from "react";
 import { Modal, Button, Card, Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { SubscriptionController } from "../../../_controllers/index.js";
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+
 import { getCookie } from "../utils/ClientHelpers.js";
 import Helpers from "../utils/Helpers.js";
 import CustomFunction from "../utils/CustomFunction.js";
 import Constants from "../../../constants/index.js";
 import sha256 from 'crypto-js/sha256';
 import axios from "axios";
+import CryptoJS from 'crypto-js';
+
 
 
 const SubscriptionModal = ({ show, handleClose }) => {
+    const router = useRouter();
+
     const pathname = usePathname()
     const [packageType, setPackageType] = useState([]);
     const [devicePrice, setDevicePrice] = useState(0);
@@ -127,7 +133,9 @@ const SubscriptionModal = ({ show, handleClose }) => {
             console.log("response.data", response.data);
             // await SubscriptionController.phonePe(response.data);
             const res = await axios.post('/api/initiatePayment', response.data);
+            // const res = await phonePe(response.data);
             console.log("res**************", res);
+
             if (res.data.success) {
                 window.location.href = res.data.paymentUrl;
             } else {
@@ -136,74 +144,73 @@ const SubscriptionModal = ({ show, handleClose }) => {
         }
     }
 
-    // const phonePe = async (paymentDocument) => {
-    //     console.log("paymentDocument", paymentDocument)
-    //     try {
-    //         console.log("paymentDocument", paymentDocument);
-    //         let payload = {
-    //             merchantId: process.env.NEXT_PUBLIC_MERCHANT_ID,
-    //             merchantTransactionId: paymentDocument.merchant_transaction_id,
-    //             merchantUserId: paymentDocument.company_id,
-    //             amount: paymentDocument.payment * 100, // converting to paise
-    //             // redirectUrl: `${API_URL}payment/validate/${paymentDocument.merchant_transaction_id}`, // pending
-    //             // redirectMode: "REDIRECT",
+    const phonePe = async (paymentDocument) => {
+   
+        const { company_id, merchant_transaction_id, payment } = paymentDocument;
+        // console.log("paymentDocument", paymentDocument);
 
-    //             redirectUrl: `${API_URL}status/${paymentDocument.merchant_transaction_id}`,
-    //             redirectMode: "POST",
-    //             callbackUrl: `${API_URL}status/${paymentDocument.merchant_transaction_id}`,
-    //             mobileNumber: process.env.NEXT_PUBLIC_MOBILE_NO,
-    //             paymentInstrument: {
-    //               type: "PAY_PAGE",
-    //             },
-    //         };
+        try {
 
-    //         const dataPayload = JSON.stringify(payload);
-    //         console.log("dataPayload", dataPayload);
-
-    //         const encodedPayload = Buffer.from(dataPayload).toString("base64");
-    //         console.log("encodedPayload", encodedPayload);
-
-    //         // const fullURL = dataBase64 + "/pg/v1/pay" + process.env.NEXT_PUBLIC_SALT_KEY;
-    //         const dataSha256 = sha256(encodedPayload + "/pg/v1/pay" + process.env.NEXT_PUBLIC_SALT_KEY);
-
-    //         const checksum = dataSha256 + "###" + process.env.NEXT_PUBLIC_SALT_KEY_INDEX;
-    //         console.log("c====",checksum);
-
-    //         const UAT_PAY_API_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay";
+            let payload = {
+                merchantId: 'PGTESTPAYUAT',
+                merchantTransactionId: merchant_transaction_id,
+                merchantUserId: company_id,
+                amount: payment * 100, // converting to paise
+                redirectUrl: 'http://139.59.69.40:3537/success',
+                redirectMode: 'POST',
+                callbackUrl: 'http://139.59.69.40:3537/success',
+                mobileNumber: '7880024466',
+                paymentInstrument: {
+                    type: "PAY_PAGE",
+                },
+            };
+            console.log(payload)
+            const dataPayload = JSON.stringify(payload);
+            const encodedPayload = Buffer.from(dataPayload).toString('base64');
+            console.log("encodedPayload", encodedPayload)
+    
+            const endpoint = '/pg/v1/pay';
+            // const saltKey = '698156b4-767b-452d-adc7-68c04d933f0d';
+            const saltKey = '099eb0cd-02cf-4e2a-8aca-3e6c6aff0399';
+            const merchantKeyIndex = '1';
+            const dataSha256 = CryptoJS.SHA256(encodedPayload + endpoint + saltKey).toString(CryptoJS.enc.Hex);
+            const xVerify = `${dataSha256}###${merchantKeyIndex}`;
+            console.log('X-VERIFY', xVerify);
             
+            // const UAT_PAY_API_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay";
+            const UAT_PAY_API_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox";
+            const phonePeResponse = await axios.post(UAT_PAY_API_URL,{ request: encodedPayload},
+                {
+                    headers: {
+                        accept: "application/json",
+                        "Access-Control-Allow-Headers" : "Content-Type",
+                        "Access-Control-Allow-Origin": "*",
+                        "Content-Type": "application/json",
+                        "X-VERIFY": xVerify,
+                    },
+    
+                });
+    
+            console.log("phonePeResponse.data", phonePeResponse.data);
+            if (phonePeResponse.data.success) {
+                console.log("phonePeResponse", phonePeResponse.data.data.instrumentResponse.redirectInfo.url);
+                const url = phonePeResponse.data.data.instrumentResponse.redirectInfo.url;
 
-    //         // const response = await axios.post(UAT_PAY_API_URL,{ request: encodedPayload},
-    //         //     {
-    //         //       headers: {
-    //         //         accept: "application/json",
-    //         //         "Content-Type": "application/json",
-    //         //         "X-VERIFY": checksum,
-    //         //       },
-
-    //         //     }
-    //         //   );
-
-    //         //   strict-origin-when-cross-origin
-
-    //         const response = await fetch('https://api.phonepe.com/apis/hermes/pg/v1/pay', {
-    //               method: 'POST',
-    //               body: JSON.stringify({request: encodedPayload}),
-    //               headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'X-VERIFY': checksum,
-    //                 accept: 'application/json',
-    //               },
-    //             },
-    //           );
-        
-    //           const resData = await response.json();
-    //           console.log("resData", resData);
+                const redirect = response.data.data.instrumentResponse.redirectInfo.url;
+                router.push(redirect)
+                // return new Response(JSON.stringify({ success: true, paymentUrl: phonePeResponse.data.data.instrumentResponse.redirectInfo.url }));
+            } else {
+                console.log("error", phonePeResponse.data)
+                // return new Response(JSON.stringify({ success: false, message: 'Payment initiation failed.' }), { status: 400 });
+            }
+        } catch (error) {   
+            console.error('Error with PhonePe API:', error);
+            // return new Response(JSON.stringify({ success: false, message: 'Internal server error.' }), { status: 500 });
+        }
 
 
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+    
+    }
 
 
     useEffect(() => {
