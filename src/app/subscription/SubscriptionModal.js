@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { Modal, Button, Card, Form, Row, Col, InputGroup } from 'react-bootstrap';
-import { SubscriptionController } from "../../../_controllers/index.js";
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+
+import { fetchPackageType, subscriptionPayment } from "../../../_controllers/SubscriptionController.js";
 
 import { getCookie } from "../utils/ClientHelpers.js";
 import Helpers from "../utils/Helpers.js";
@@ -32,7 +33,7 @@ const SubscriptionModal = ({ show, handleClose }) => {
 
 
     const getPackageType = async () => {
-        const response = await SubscriptionController.packageType();
+        const response = await fetchPackageType();
         if (response.status === 200) {
             setPackageType(response.data);
             setDevicePrice(response.device_price);
@@ -122,94 +123,26 @@ const SubscriptionModal = ({ show, handleClose }) => {
             merchant_transaction_id: merchant_transaction_id,
             payment_status: Constants.PAYMENT_PENDING,
             package_type_id: packageTypeId,
-            no_of_employee:numOfEmployee,
-            package_amount:totalEmployeeAmount,
-            device_quantity:numOfDevice, 
-            device_amount:totalDeviceAmount,
+            no_of_employee: numOfEmployee,
+            package_amount: totalEmployeeAmount,
+            device_quantity: numOfDevice, 
+            device_amount: totalDeviceAmount,
         }
 
-        const response = await SubscriptionController.subscriptionPayment(formData);
+        const response = await subscriptionPayment(formData);
         if (response.status === 200) {
-            console.log("response.data", response.data);
             // await SubscriptionController.phonePe(response.data);
-            const res = await axios.post('/api/initiatePayment', response.data);
-            // const res = await phonePe(response.data);
+            // const res = await axios.post('/api/initiatePayment', response.data);
+            
+            const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + 'initiate-payment', response.data);
             console.log("res**************", res);
-
             if (res.data.success) {
-                window.location.href = res.data.paymentUrl;
+                window.open(res.data.paymentUrl, '_self', 'noreferrer');
             } else {
                 alert('Payment initiation failed. Please try again.');
             }
         }
-    }
 
-    const phonePe = async (paymentDocument) => {
-   
-        const { company_id, merchant_transaction_id, payment } = paymentDocument;
-        // console.log("paymentDocument", paymentDocument);
-
-        try {
-
-            let payload = {
-                merchantId: 'PGTESTPAYUAT',
-                merchantTransactionId: merchant_transaction_id,
-                merchantUserId: company_id,
-                amount: payment * 100, // converting to paise
-                redirectUrl: 'http://139.59.69.40:3537/success',
-                redirectMode: 'POST',
-                callbackUrl: 'http://139.59.69.40:3537/success',
-                mobileNumber: '7880024466',
-                paymentInstrument: {
-                    type: "PAY_PAGE",
-                },
-            };
-            console.log(payload)
-            const dataPayload = JSON.stringify(payload);
-            const encodedPayload = Buffer.from(dataPayload).toString('base64');
-            console.log("encodedPayload", encodedPayload)
-    
-            const endpoint = '/pg/v1/pay';
-            // const saltKey = '698156b4-767b-452d-adc7-68c04d933f0d';
-            const saltKey = '099eb0cd-02cf-4e2a-8aca-3e6c6aff0399';
-            const merchantKeyIndex = '1';
-            const dataSha256 = CryptoJS.SHA256(encodedPayload + endpoint + saltKey).toString(CryptoJS.enc.Hex);
-            const xVerify = `${dataSha256}###${merchantKeyIndex}`;
-            console.log('X-VERIFY', xVerify);
-            
-            // const UAT_PAY_API_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay";
-            const UAT_PAY_API_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox";
-            const phonePeResponse = await axios.post(UAT_PAY_API_URL,{ request: encodedPayload},
-                {
-                    headers: {
-                        accept: "application/json",
-                        "Access-Control-Allow-Headers" : "Content-Type",
-                        "Access-Control-Allow-Origin": "*",
-                        "Content-Type": "application/json",
-                        "X-VERIFY": xVerify,
-                    },
-    
-                });
-    
-            console.log("phonePeResponse.data", phonePeResponse.data);
-            if (phonePeResponse.data.success) {
-                console.log("phonePeResponse", phonePeResponse.data.data.instrumentResponse.redirectInfo.url);
-                const url = phonePeResponse.data.data.instrumentResponse.redirectInfo.url;
-
-                const redirect = response.data.data.instrumentResponse.redirectInfo.url;
-                router.push(redirect)
-                // return new Response(JSON.stringify({ success: true, paymentUrl: phonePeResponse.data.data.instrumentResponse.redirectInfo.url }));
-            } else {
-                console.log("error", phonePeResponse.data)
-                // return new Response(JSON.stringify({ success: false, message: 'Payment initiation failed.' }), { status: 400 });
-            }
-        } catch (error) {   
-            console.error('Error with PhonePe API:', error);
-            // return new Response(JSON.stringify({ success: false, message: 'Internal server error.' }), { status: 500 });
-        }
-
-
-    
     }
 
 
@@ -228,6 +161,7 @@ const SubscriptionModal = ({ show, handleClose }) => {
 
     return (
         <>
+
             <Modal show={show} onHide={() => {
                 handleClose()
                 setIsDeviceChecked(false);

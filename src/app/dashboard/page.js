@@ -25,7 +25,7 @@ const Dashboard = () => {
                 <div className="row">
                     <div className="col-6">
                         <h2>Dashboard Content Area {companyId}</h2>
-                        <p>This is where your main content will {Constants.ADMINISTRATOR}. </p>
+                        <p>This is {process.env.NEXT_PUBLIC_API_URL} your main content will {Constants.ADMINISTRATOR}. </p>
                     </div>
                     <div className="col-6">
                         <h2>Dashboard Content Area {companyId}</h2>

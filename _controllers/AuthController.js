@@ -1,6 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const companyLogin = async (formData) => {
+    console.log(API_URL);
     try {
         const res = await fetch(API_URL + 'company-login', {
             method: 'post',
