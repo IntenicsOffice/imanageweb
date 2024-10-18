@@ -16,7 +16,7 @@ export default function PaymentSuccess() {
 
 	useEffect(() => {
 		managePackageSubscriptionStatus();
-	}, []);
+	});
 
 
 

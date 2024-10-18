@@ -1,4 +1,4 @@
-import Layout from "../_components/Layout";
+import Layout from "../layouts/Layout";
 
 const Company = () =>{
     return (

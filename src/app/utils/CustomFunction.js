@@ -3,6 +3,20 @@ import moment from 'moment';
 
 const CustomFunction  = {
 
+    toCapitalize(sentence) {
+        if (!sentence) return '';
+        return sentence
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    },
+
+    toSentenceCase(str){
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    },
+
+    // backend functions here
     currentDate(){
         const now = new Date();
         const current_date = date.format(now, 'YYYY-MM-DD') // => '2015/01/02 23:14:05'

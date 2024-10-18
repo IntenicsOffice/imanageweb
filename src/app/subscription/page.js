@@ -1,25 +1,96 @@
 "use client"
 
-import { useState } from "react";
-import Layout from "../_components/Layout";
+import { useEffect, useState } from "react";
+import Layout from "../layouts/Layout";
 import SubscriptionModal from "./SubscriptionModal";
-import { Button } from "react-bootstrap";
+import { Button, Card, Col, Row } from "react-bootstrap";
+import { fetchSubscription } from "../../../_controllers/SubscriptionController";
+import { getCookie } from "../utils/ClientHelpers";
+import moment from "moment";
 
-const Subscription = ()=>{
+
+const Subscription = () => {
+    const [companyId, setCompanyId] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [subscriptioData, setSubscriptioData] = useState({});
 
-  const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
+
+    const handleShowModal = () => setShowModal(true);
+    const handleCloseModal = () => setShowModal(false);
+
+    const getSubscriptionPlan = async (companyId) => {
+        if (!companyId) return; // Agar companyId nahi hai to kuch nahi karein
+        const response = await fetchSubscription(companyId);
+        if (response.status === 200) {
+            setSubscriptioData(response.data);
+        }
+        // console.log(response);
+    };
+
+    useEffect(() => {
+        const companyIdCookie = getCookie('company_id');
+
+        // Set state with cookie values
+        setCompanyId(companyIdCookie);
+    }, []);
+
+    useEffect(() => {
+        getSubscriptionPlan(companyId);
+    }, [companyId]); // companyId ke change hone par call karein
+
 
     return (
         <>
             <Layout>
-                <div className="position-relative" >
-                    <div className="position-absolute top-0 end-0 p-2">
-                        <Button variant="primary" size="sm" onClick={handleShowModal}> Subscribe Plan </Button>
+
+                <div className="row">
+                    <div className="col-md-12 p-2">
+
+                        {/* <div className="position-relative" > */}
+                        {/* <div className="position-absolute top-0 end-0 p-2"> */}
+                        <Button variant="primary float-end" size="sm" onClick={handleShowModal}> Subscribe Plan </Button>
+                        {/* </div> */}
+                        {/* </div> */}
+                        <SubscriptionModal show={showModal} handleClose={handleCloseModal} />
                     </div>
                 </div>
-                <SubscriptionModal show={showModal} handleClose={handleCloseModal} />
+
+                <div className="row">
+                    <div className="col-md-5">
+
+                        <div className="card">
+                            <h5 className="card-header">Subscription Detail</h5>
+                            <div className="card-body">
+                                <table className="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td>Status</td>
+                                            <td>{subscriptioData?.subscription_status}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Package</td>
+                                            <td>{subscriptioData?.package_type}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Duration</td>
+                                            <td>{subscriptioData?.package_duration}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Start Date</td>
+                                            <td>{ moment(subscriptioData?.start_date).format('DD-MMM-YYYY') }</td>
+                                        </tr>
+                                        <tr>
+                                            <td>End Date</td>
+                                            <td>{ moment(subscriptioData?.end_date).format('DD-MMM-YYYY')}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
 
             </Layout>
         </>

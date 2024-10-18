@@ -1,5 +1,19 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+const fetchSubscription = async (company_id) => {
+    try {
+        const res = await fetch(API_URL + 'subscription/' + company_id, {
+            method: 'get',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 const fetchPackageType = async () => {
     try {
@@ -47,5 +61,5 @@ const checkPackageSubscriptionStatus = async (company_id) => {
     }
 }
 
-export { fetchPackageType, subscriptionPayment , checkPackageSubscriptionStatus}
+export { fetchSubscription, fetchPackageType, subscriptionPayment , checkPackageSubscriptionStatus}
 

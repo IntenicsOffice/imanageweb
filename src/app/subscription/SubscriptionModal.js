@@ -87,11 +87,6 @@ const SubscriptionModal = ({ show, handleClose }) => {
         setNumOfEmployee(prevCount => (prevCount > 0 ? prevCount - 1 : 0)); // Ensure it doesn't go below 0
     };
 
-    // const calculateDeviceAmount = () => {
-    //     const total_amount = (numOfDevice * devicePrice);
-    //     setTotalDeviceAmount(total_amount);
-    // }
-
     const calculateDeviceAmount = useCallback(() => {
         const total_amount = (numOfDevice * devicePrice);
         setTotalDeviceAmount(total_amount);
@@ -132,9 +127,9 @@ const SubscriptionModal = ({ show, handleClose }) => {
         const response = await subscriptionPayment(formData);
         if (response.status === 200) {
             // await SubscriptionController.phonePe(response.data);
-            // const res = await axios.post('/api/initiatePayment', response.data);
+            const res = await axios.post('/api/initiatePayment', response.data);
             
-            const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + 'initiate-payment', response.data);
+            // const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + 'initiate-payment', response.data);
             console.log("res**************", res);
             if (res.data.success) {
                 window.open(res.data.paymentUrl, '_self', 'noreferrer');

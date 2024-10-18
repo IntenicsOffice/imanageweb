@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Dropdown } from 'bootstrap';
 import { useEffect, useState } from 'react';
 import Image from "next/image";
-import { MasterController } from "../../../../_controllers/index.js";
 import { useRouter } from 'next/navigation';
 import { getCookie, deleteCookie } from "@/app/utils/ClientHelpers.js";
 

@@ -12,9 +12,11 @@ export async function POST(request) {
             merchantTransactionId: merchant_transaction_id,
             merchantUserId: company_id,
             amount: payment * 100, // converting to paise
-            redirectUrl: 'https://imanageweb.intenics.in/success',
+            redirectUrl: 'https://imanageweb.intenics.in/api/status',
+            // redirectUrl: 'http://localhost:3000/api/status',
             redirectMode: 'POST',
-            callbackUrl: 'https://imanageweb.intenics.in/success',
+            callbackUrl: 'https://imanageweb.intenics.in/api/status',
+            // callbackUrl: 'http://localhost:3000/api/status',
             mobileNumber: '7880024466',
             paymentInstrument: {
                 type: "PAY_PAGE"
