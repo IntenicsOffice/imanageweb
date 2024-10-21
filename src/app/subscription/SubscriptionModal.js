@@ -90,7 +90,7 @@ const SubscriptionModal = ({ show, handleClose }) => {
     const calculateDeviceAmount = useCallback(() => {
         const total_amount = (numOfDevice * devicePrice);
         setTotalDeviceAmount(total_amount);
-    }, [numOfDevice, devicePrice]); 
+    }, [numOfDevice, devicePrice]);
 
     const calculateEmployeeAmount = useCallback(() => {
         const selectedPackage = packageType.find(item => `package_type-${packageType.indexOf(item)}` === selectedPlan);
@@ -107,9 +107,9 @@ const SubscriptionModal = ({ show, handleClose }) => {
                 setTotalEmployeeAmount(total_amount);
             }
         }
-    },[selectedPlan, packageType, numOfEmployee, packageMonthlyPrice, packageYearlyPrice]);
+    }, [selectedPlan, packageType, numOfEmployee, packageMonthlyPrice, packageYearlyPrice]);
 
-    const postPayment = async () =>{
+    const postPayment = async () => {
         const companyIdCookie = getCookie("company_id");
         const merchant_transaction_id = 'MT' + CustomFunction.generateRandomId();
         const formData = {
@@ -120,26 +120,56 @@ const SubscriptionModal = ({ show, handleClose }) => {
             package_type_id: packageTypeId,
             no_of_employee: numOfEmployee,
             package_amount: totalEmployeeAmount,
-            device_quantity: numOfDevice, 
+            device_quantity: numOfDevice,
             device_amount: totalDeviceAmount,
         }
 
         const response = await subscriptionPayment(formData);
         if (response.status === 200) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            // form.action = 'http://localhost:8085/payment/imanage-payment'; // Target URL
+
+            form.action = 'https://intenics.in/payment/imanage-payment'; // Target URL
+            // form.action = 'https://intenics.in/imanage-payment'; // Target URL
+            // form.target = '_blank'; // Open in a new tab
+
+            const companyInput = document.createElement('input');
+            companyInput.type = 'hidden';
+            companyInput.name = 'company_id';
+            companyInput.value = response.data.company_id;
+
+            const transactionInput = document.createElement('input');
+            transactionInput.type = 'hidden';
+            transactionInput.name = 'merchant_transaction_id';
+            transactionInput.value = response.data.merchant_transaction_id;
+
+            const paymentInput = document.createElement('input');
+            paymentInput.type = 'hidden';
+            paymentInput.name = 'payment';
+            paymentInput.value = response.data.payment;
+
+            form.appendChild(companyInput);
+            form.appendChild(transactionInput);
+            form.appendChild(paymentInput);
+
+            document.body.appendChild(form);
+            form.submit();
+
             // await SubscriptionController.phonePe(response.data);
-            const res = await axios.post('/api/initiatePayment', response.data);
-            
+            // const res = await axios.post('/api/initiatePayment', response.data);
             // const res = await axios.post(process.env.NEXT_PUBLIC_API_URL + 'initiate-payment', response.data);
-            console.log("res**************", res);
-            if (res.data.success) {
-                window.open(res.data.paymentUrl, '_self', 'noreferrer');
-            } else {
-                alert('Payment initiation failed. Please try again.');
-            }
+            // console.log("res**************", res);
+            // if (res.data.success) {
+            //     window.open(res.data.paymentUrl, '_self', 'noreferrer');                
+            //     // window.open(res.data.paymentUrl);
+
+            // } else {
+            //     alert('Payment initiation failed. Please try again.');
+            // }
         }
 
     }
-
 
     useEffect(() => {
         calculateDeviceAmount();
@@ -287,7 +317,7 @@ const SubscriptionModal = ({ show, handleClose }) => {
                                         Total Amount - {totalDeviceAmount + totalEmployeeAmount}
                                     </Col>
                                     <Col md={3}>
-                                        <Button variant="primary" size="sm" onClick={postPayment}>
+                                        <Button variant="primary" size="sm" onClick={postPayment} disabled={totalDeviceAmount + totalEmployeeAmount === 0} >
                                             Buy Now
                                         </Button>
                                     </Col>

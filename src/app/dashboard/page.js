@@ -37,45 +37,45 @@ const Dashboard = () => {
 
                     <div className="col-3">
 
-                        <div class="card mt-2 mb-3" >
-                            <div class="card-header">
+                        <div className="card mt-2 mb-3" >
+                            <div className="card-header">
                                 <b>Teams</b>
                             </div>
-                            <div class="card-body scrollable-width" style={{ maxHeight: '530px', overflowY: 'auto' }}>
+                            <div className="card-body scrollable-width" style={{ maxHeight: '530px', overflowY: 'auto' }}>
 
-                                <div class="accordion" id="accordionPanelsStayOpenExample">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                                                Today's On Leave
+                                <div className="accordion" id="accordionPanelsStayOpenExample">
+                                    <div className="accordion-item">
+                                        <h2 className="accordion-header" id="panelsStayOpen-headingOne">
+                                            <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                                Todays On Leave
                                             </button>
                                         </h2>
-                                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-                                            <div class="accordion-body">
+                                        <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                            <div className="accordion-body">
                                                 <TodayOnLeave />
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                                                Today's Leave Request
+                                    <div className="accordion-item">
+                                        <h2 className="accordion-header" id="panelsStayOpen-headingTwo">
+                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                                                Todays Leave Request
                                             </button>
                                         </h2>
-                                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-                                            <div class="accordion-body">
+                                        <div id="panelsStayOpen-collapseTwo" className="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+                                            <div className="accordion-body">
                                                 <TodayLeaveRequest />
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-                                                Today's Presence 15/20
+                                    <div className="accordion-item">
+                                        <h2 className="accordion-header" id="panelsStayOpen-headingThree">
+                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                                                Todays Presence 15/20
                                             </button>
                                         </h2>
-                                        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
-                                            <div class="accordion-body">
+                                        <div id="panelsStayOpen-collapseThree" className="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+                                            <div className="accordion-body">
                                                 <TeamPresence companyId={companyId} />
                                             </div>
                                         </div>

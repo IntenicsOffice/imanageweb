@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Layout from "../layouts/Layout";
 import SubscriptionModal from "./SubscriptionModal";
 import { Button, Card, Col, Row } from "react-bootstrap";
-import { fetchSubscription } from "../../../_controllers/SubscriptionController";
+import { checkPackageSubscriptionStatus, fetchSubscription } from "../../../_controllers/SubscriptionController";
 import { getCookie } from "../utils/ClientHelpers";
 import moment from "moment";
 
@@ -17,6 +17,11 @@ const Subscription = () => {
 
     const handleShowModal = () => setShowModal(true);
     const handleCloseModal = () => setShowModal(false);
+
+
+    const managePackageSubscriptionStatus = async (companyId) => {
+		await checkPackageSubscriptionStatus(companyId);
+	}
 
     const getSubscriptionPlan = async (companyId) => {
         if (!companyId) return; // Agar companyId nahi hai to kuch nahi karein
@@ -35,7 +40,14 @@ const Subscription = () => {
     }, []);
 
     useEffect(() => {
-        getSubscriptionPlan(companyId);
+        
+        const fetchData = async () => {
+			await managePackageSubscriptionStatus(companyId);
+            getSubscriptionPlan(companyId);
+		};
+
+		fetchData();
+
     }, [companyId]); // companyId ke change hone par call karein
 
 
@@ -45,12 +57,7 @@ const Subscription = () => {
 
                 <div className="row">
                     <div className="col-md-12 p-2">
-
-                        {/* <div className="position-relative" > */}
-                        {/* <div className="position-absolute top-0 end-0 p-2"> */}
                         <Button variant="primary float-end" size="sm" onClick={handleShowModal}> Subscribe Plan </Button>
-                        {/* </div> */}
-                        {/* </div> */}
                         <SubscriptionModal show={showModal} handleClose={handleCloseModal} />
                     </div>
                 </div>

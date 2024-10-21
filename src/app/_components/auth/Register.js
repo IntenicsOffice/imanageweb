@@ -97,7 +97,7 @@ const Register = () => {
                     {errors.ownerName && <small className="text-danger">{errors.ownerName}</small>}
                 </div>
 
-                <div class="mb-3">
+                <div className="mb-3">
                     <label htmlFor="email" className="form-label">Mobile No.</label>
                     <input type="text" className="form-control" id="mobile" name="mobile" value={mobile} onChange={(e)=>setMobile(e.target.value)} placeholder="Enter mobile no" />
                     {errors.mobile && <small className="text-danger">{errors.mobile}</small>}

@@ -83,7 +83,6 @@ const Login = () => {
                     </div>
                     <div className="input-group input-group-merge">
                         <input type={passwordVisible ? 'text' : 'password'} className="form-control" value={password} onChange={(e)=> setPassword(e.target.value)} name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                        {/* <span className="input-group-text cursor-pointer"><i class="bi bi-eye-slash"></i></span> */}
                         <span className="input-group-text cursor-pointer" onClick={() => setPasswordVisible(!passwordVisible)}>
                             <i className={passwordVisible ? "bi bi-eye" : "bi bi-eye-slash"}></i>
                         </span>
