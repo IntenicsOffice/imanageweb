@@ -202,10 +202,10 @@ const SubscriptionModal = ({ show, handleClose }) => {
                             <Card.Body>
                                 {
                                     packageType.map((item, index) => (
-                                        <Row key={index}>
-                                            <Col md={5}>
+                                        <Row key={index} className="align-items-center">
+                                            <Col lg={8} md={6} sm={7} xs={7}>
                                                 <Form>
-                                                    <div key={`package_type-${index}`} className="mb-2">
+                                                    <div key={`package_type-${index}`}>
                                                         <Form.Text>
                                                             <Form.Check
                                                                 type="radio"
@@ -221,7 +221,7 @@ const SubscriptionModal = ({ show, handleClose }) => {
                                                     </div>
                                                 </Form>
                                             </Col>
-                                            <Col md={5}>
+                                            <Col lg={4} md={6} sm={5} xs={5}>
                                                 <Form.Text>
                                                     : {item.package_price} / per user
                                                 </Form.Text>
@@ -231,7 +231,7 @@ const SubscriptionModal = ({ show, handleClose }) => {
                                     ))
                                 }
                                 <Row>
-                                    <Col md={5}>
+                                    <Col lg={5} md={5} sm={5} xs={5}>
 
                                         <div className="mb-2">
                                             <Form.Text>
@@ -246,12 +246,12 @@ const SubscriptionModal = ({ show, handleClose }) => {
                                             </Form.Text>
                                         </div>
                                     </Col>
-                                    <Col md={3} >
+                                    <Col lg={3} md={3} sm={3} xs={3} >
                                         <Form.Text>
                                             : {totalDeviceAmount}
                                         </Form.Text>
                                     </Col>
-                                    <Col md={4}>
+                                    <Col lg={4} md={4} sm={4} xs={4}>
 
                                         {isDeviceChecked && (
 
@@ -278,17 +278,17 @@ const SubscriptionModal = ({ show, handleClose }) => {
 
                                 </Row>
                                 <Row>
-                                    <Col md={5}>
+                                    <Col lg={5} md={5} sm={5} xs={5}>
                                         <div className="mb-2">
-                                            <Form.Text> Number Of Employee </Form.Text>
+                                            <Form.Text> Team Members </Form.Text>
                                         </div>
                                     </Col>
-                                    <Col md={3}>
+                                    <Col lg={3} md={3} sm={3} xs={3}>
                                         <Form.Text>
                                             : {totalEmployeeAmount}
                                         </Form.Text>
                                     </Col>
-                                    <Col md={4}>
+                                    <Col lg={4} md={4} sm={4} xs={4}>
                                         <InputGroup className="mb-3" size="sm">
                                             <Button variant="outline-success" id="employee_decrement" onClick={handleDecrementEmployee}>
                                                 <i className="bi bi-dash"></i>
@@ -313,10 +313,10 @@ const SubscriptionModal = ({ show, handleClose }) => {
                             </Card.Body>
                             <Card.Footer >
                                 <Row>
-                                    <Col md={9}>
+                                    <Col lg={8} md={8} sm={8} xs={8}>
                                         Total Amount - {totalDeviceAmount + totalEmployeeAmount}
                                     </Col>
-                                    <Col md={3}>
+                                    <Col lg={4} md={4} sm={4} xs={4}>
                                         <Button variant="primary" size="sm" onClick={postPayment} disabled={totalDeviceAmount + totalEmployeeAmount === 0} >
                                             Buy Now
                                         </Button>

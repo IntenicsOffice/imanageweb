@@ -26,11 +26,12 @@ const Home = () => {
         <>
             <div className="container pt-5 ">
 
-                <div className="row ">
-                    <div className="col-4 offset-4 ">
+                <div className="row">
+                    <div className="col-lg-4 col-md-6 col-sm-8 col-12 offset-lg-4 offset-md-3 offset-sm-2">
 
                         <div className="authentication-wrapper authentication-basic container-p-y ">
                             <div className="authentication-inner">
+
                                 <div className="card">
                                     <div className="card-body">
                                         {

@@ -42,7 +42,6 @@ const TeamPresence = (props) => {
 
 	return (
 		<>
-
 			{departments.map((department) => (
 				<div className="card mb-2" key={department.department_id}>
 					<div className="card-header p-1">
